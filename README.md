@@ -86,7 +86,9 @@ I studied Physics at UFES before moving into software, which is probably why I w
 
 ### Projects
 
-#### `ibge-rag` · hybrid retrieval, tool calling and a corrective agent over Brazilian open data
+#### [`ask-dont-search`](https://github.com/cyroalves/ask-dont-search) · hybrid retrieval, tool calling and a corrective agent
+
+*When the answer is a number in a table, don't search text for it — ask the source.*
 
 Question answering over 5,993 IBGE press releases (2004–2026) and five official SIDRA statistical series, running entirely on local models — `bge-m3` for embeddings, `gemma3:4b` for generation, both on Ollama, no API keys. Built to answer one question: when does retrieval actually help, and when is it the wrong instrument?
 
@@ -95,7 +97,7 @@ Question answering over 5,993 IBGE press releases (2004–2026) and five officia
 - **Results reported against myself.** Hybrid fusion *lowers* ranking quality on this corpus (MRR 0.36 → 0.28) and that row stays in the table. The LLM reranker wins on all three measures at 8× the latency, listed with its parse-failure count so a reranker that silently no-ops cannot look like the row above it.
 - **The evaluation set is derived, not hand-written.** Questions come from one template per series, correct values from whatever SIDRA returns, and gold documents from a mechanical, boundary-aware join on product id and release window — so the numbers describe the system rather than the author's memory of the corpus.
 - **Deterministic where it counts.** Period resolution returns `None` instead of inventing a period, and every number in an answer must appear in the context it was given before the answer is released — which catches the failure an LLM judge is worst at: a plausible figure recalled from model weights.
-- 31 tests with faked embedding and chat backends, so CI needs neither a GPU nor network access.
+- 33 tests with faked embedding and chat backends, so CI needs neither a GPU nor network access.
 
 #### [`ata`](https://github.com/cyroalves/ai_talk) · meeting to document, offline
 

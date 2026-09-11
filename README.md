@@ -5,9 +5,9 @@ Espírito Santo, Brazil · open to remote
 
 ### About Me
 
-Software engineer with around six years of experience in **Python** and **TypeScript**. For the last four I have been at **Play9**, a SaaS platform for influencer campaign management, billing and media data, working end to end on **Playnest** — an application with roughly 100k users: data model and API, interface, third-party integrations, and the pipelines behind them.
+Software engineer with around six years of experience in **Python** and **TypeScript**. For the last four I have been at **Play9**, a SaaS platform for influencer campaign management, billing and media data. I was part of the team behind **Playnest** — an application with roughly 100k users — working end to end there: data model and API, interface, third-party integrations, and the pipelines behind them.
 
-**Most of my work lives in private repositories,** so this profile is quieter than my commit history. What it looks like in practice:
+**Most of my work lives in private repositories,** so the repository list here is much shorter than the work behind it. What that work looks like in practice:
 
 - **End to end by default.** I design the schema, write the API, build the screen, and make sure the data arriving on both sides is trustworthy.
 - **Data platform.** Airflow and dbt on BigQuery over GCP: a layered architecture (landing → trusted → refined → DW), idempotent `MERGE` upserts, SCD Type 2 state history, partitioning and clustering.
@@ -62,9 +62,11 @@ I studied Physics at UFES before moving into software, which is probably why I w
 ![ESLint](https://img.shields.io/badge/-ESLint-05122A?style=flat&logo=eslint&logoColor=4B32C3)&nbsp;
 ![Git](https://img.shields.io/badge/-Git-05122A?style=flat&logo=git&logoColor=F05032)
 
-### Featured Project — `ata`
+### Public Projects
 
-A tool I built and use daily: a **Go** binary orchestrating **ffmpeg**, **Whisper** (whisper.cpp) and an **LLM**. It records a meeting, transcribes it entirely on the local machine — the audio never leaves it, an LGPD requirement of the use case — and generates three document types: meeting minutes, technical specification, and requirements gathering.
+#### [`ata`](https://github.com/cyroalves/ai_talk) · meeting to document, offline
+
+A tool I built and use daily: a single **Go** binary orchestrating **ffmpeg**, **Whisper** (whisper.cpp) and an **LLM**. It records a meeting, transcribes it entirely on the local machine — the audio never leaves it, an LGPD requirement of the use case — and generates three document types: meeting minutes, technical specification, and requirements gathering.
 
     record → ffmpeg → whisper.cpp (offline) → LLM (swappable) → document
 
@@ -73,6 +75,10 @@ A tool I built and use daily: a **Go** binary orchestrating **ffmpeg**, **Whispe
 - **Explicit token budgeting.** It estimates transcript plus prompt against an output reserve sized from the real documents, and fails with a clear error when the input does not fit the context window, instead of letting the model truncate silently.
 - **A real failure diagnosed.** On a 58-minute meeting the transcript collapsed into repetition from the halfway point: the decoder was feeding its own error back as context for the next window. Isolating the decoding windows restored full coverage.
 - **Build versus buy, decided with numbers.** A study over a measured corpus — 18 meetings, 34 documents, 11.6 hours of audio — with a cost calculator and explicit per-model assumptions. Token cost turned out to be noise; the real decision was audio privacy and engineering hours.
+
+#### [`load-balancer`](https://github.com/cyroalves/load-balancer) · layer-7 HTTP load balancer in Go
+
+No external dependencies. Pluggable strategies — round-robin, least-connections and ip-hash — with active and passive health checking, automatic failover with safe request-body retry, and per-backend metrics.
 
 ### Currently Deepening
 

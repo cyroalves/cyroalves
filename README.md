@@ -1,19 +1,19 @@
 # Cyro Alves
 
-**Software Engineer** — full-stack product, data platform, and applied LLMs.
+**Software Engineer** · full-stack product, data platform, and applied LLMs.
 Espírito Santo, Brazil · open to remote
 
 ### About Me
 
-Software engineer with around six years of experience in **Python** and **TypeScript**. For the last four I have been at **Play9**, a SaaS platform for influencer campaign management, billing and media data. I was part of the team behind **Playnest** — an application with roughly 100k users — working end to end there: data model and API, interface, third-party integrations, and the pipelines behind them.
+Software engineer with around six years of experience in Python and TypeScript. For the last four I have been at **Play9**, a SaaS platform for influencer campaign management, billing and media data. I was part of the team behind **Playnest**, an application with roughly 100k users, working end to end there: data model and API, interface, third-party integrations, and the pipelines behind them. These days I work directly with clients, turning their demands into product on our internal platform.
 
 **Most of my work lives in private repositories,** so the repository list here is much shorter than the work behind it. What that work looks like in practice:
 
 - **End to end by default.** I design the schema, write the API, build the screen, and make sure the data arriving on both sides is trustworthy.
-- **Data platform.** Airflow and dbt on BigQuery over GCP: a layered architecture (landing → trusted → refined → DW), idempotent `MERGE` upserts, SCD Type 2 state history, partitioning and clustering.
-- **Production changes under a protocol.** Backfills and migrations with a dry-run, a scoped blast radius, before/after snapshots, and a second run to prove idempotency.
+- **Data platform.** Airflow and dbt on BigQuery over GCP: a layered architecture (landing, trusted, refined, warehouse), idempotent `MERGE` upserts, SCD Type 2 state history, partitioning and clustering.
+- **Production changes under a protocol.** Backfills and migrations with a dry run, a scoped blast radius, before and after snapshots, and a second run to prove idempotency.
 - **Integrations that survive the other side being down.** OAuth 1.0 TBA and 2.0, pagination, exponential backoff, rate limiting, and a transactional ledger for idempotent synchronization with asynchronous retry.
-- **Applied LLMs, with a spine.** Versioned system prompts, explicit token budgeting, interchangeable model backends. And when an LLM does not pay off, I say so — for a PDF parser I measured OCR against an LLM and shipped deterministic extraction instead: no cost per document, auditable output.
+- **Applied LLMs, with a spine.** Versioned system prompts, explicit token budgeting, interchangeable model backends. And when an LLM does not pay off, I say so: for a PDF parser I measured OCR against an LLM and shipped deterministic extraction instead, for data-protection and cost reasons.
 - **Coding agents used structurally.** Skills, rules and subagents versioned in the production repository, and spec-driven development with PRDs as the input to the work.
 
 I studied Physics at UFES before moving into software, which is probably why I would rather settle a question with a measurement than with an opinion.
@@ -26,7 +26,7 @@ I studied Physics at UFES before moving into software, which is probably why I w
 ![TypeScript](https://img.shields.io/badge/-TypeScript-05122A?style=flat&logo=typescript&logoColor=3178C6)&nbsp;
 ![SQL](https://img.shields.io/badge/-SQL-05122A?style=flat&logo=postgresql&logoColor=4479A1)&nbsp;
 ![Go](https://img.shields.io/badge/-Go-05122A?style=flat&logo=go&logoColor=00ADD8)&nbsp;
-![Rust](https://img.shields.io/badge/-Rust-05122A?style=flat&logo=rust&logoColor=DEA584)
+![Java](https://img.shields.io/badge/-Java-05122A?style=flat&logo=openjdk&logoColor=white)
 
 **Back-end and APIs**
 
@@ -35,6 +35,7 @@ I studied Physics at UFES before moving into software, which is probably why I w
 ![Apollo Server](https://img.shields.io/badge/-Apollo%20Server-05122A?style=flat&logo=apollographql&logoColor=white)&nbsp;
 ![TypeORM](https://img.shields.io/badge/-TypeORM-05122A?style=flat&logo=typeorm&logoColor=FE0803)&nbsp;
 ![Express](https://img.shields.io/badge/-Express-05122A?style=flat&logo=express&logoColor=white)&nbsp;
+![Spring Boot](https://img.shields.io/badge/-Spring%20Boot-05122A?style=flat&logo=springboot&logoColor=6DB33F)&nbsp;
 ![Flask](https://img.shields.io/badge/-Flask-05122A?style=flat&logo=flask&logoColor=white)&nbsp;
 ![Redis](https://img.shields.io/badge/-Redis-05122A?style=flat&logo=redis&logoColor=FF4438)
 
@@ -46,6 +47,11 @@ I studied Physics at UFES before moving into software, which is probably why I w
 ![React Query](https://img.shields.io/badge/-React%20Query-05122A?style=flat&logo=reactquery&logoColor=FF4154)&nbsp;
 ![Zod](https://img.shields.io/badge/-Zod-05122A?style=flat&logo=zod&logoColor=3E67B1)&nbsp;
 ![Radix UI](https://img.shields.io/badge/-Radix%20UI-05122A?style=flat&logo=radixui&logoColor=white)
+
+**Messaging and streaming**
+
+![Apache Kafka](https://img.shields.io/badge/-Apache%20Kafka-05122A?style=flat&logo=apachekafka&logoColor=white)&nbsp;
+![Pub/Sub](https://img.shields.io/badge/-Pub%2FSub-05122A?style=flat&logo=googlecloud&logoColor=4285F4)
 
 **Data and warehouse**
 
@@ -81,27 +87,40 @@ I studied Physics at UFES before moving into software, which is probably why I w
 
 ![pytest](https://img.shields.io/badge/-pytest-05122A?style=flat&logo=pytest&logoColor=0A9EDC)&nbsp;
 ![Jest](https://img.shields.io/badge/-Jest-05122A?style=flat&logo=jest&logoColor=C21325)&nbsp;
+![Testcontainers](https://img.shields.io/badge/-Testcontainers-05122A?style=flat&logo=testcontainers&logoColor=291A3D)&nbsp;
 ![Ruff](https://img.shields.io/badge/-Ruff-05122A?style=flat&logo=ruff&logoColor=D7FF64)&nbsp;
 ![ESLint](https://img.shields.io/badge/-ESLint-05122A?style=flat&logo=eslint&logoColor=4B32C3)
 
 ### Projects
 
+#### [`java-spring-kafka`](https://github.com/cyroalves/java-spring-kafka) · event-driven order pipeline on Spring Boot 4 and Kafka 4
+
+*Every guarantee is demonstrable by one command and covered by a test against a real broker.*
+
+An HTTP API publishes orders to `orders.v1`. Two consumer groups read that topic, one validating and one issuing invoices to `invoices.v1`, with a dead letter queue behind both. Java 21, Kafka 4 on KRaft, Testcontainers.
+
+- **Ordering where it matters.** The customer id is the record key, so every order from one customer lands on one partition and keeps its sequence. `make burst` publishes nine orders across three customers and shows the split.
+- **Retry that distinguishes causes.** Exponential backoff at 500ms, 1s, 2s, 4s for transient failures. A permanent data defect skips the backoff and goes straight to the dead letter queue, because retrying a malformed order changes nothing. `make flaky` recovers on the third attempt, `make boom` exhausts the backoff, `make invalid` never retries.
+- **Backoff kept deliberately short.** While a record backs off, the container pauses the consumer and seeks back to the failed offset, so the whole partition stalls. A generous backoff on a Kafka consumer is downtime dressed as resilience.
+- **Read-process-write transactions.** A separate transactional producer with a stable `transactional.id`, so a restart fences the zombie instance instead of letting it commit behind its replacement. `setCommitRecovered(true)` commits the dead letter publish and the offset advance together, which is what stops a poison record from reappearing on every restart. `make peek` compares `read_committed` against `read_uncommitted` on the same topic.
+- **The dead letter destination is declared, not inferred.** The framework default suffix changed between spring-kafka 3.x and 4.x, and an implicit destination only reveals itself as wrong in production, as a producer stuck on `UNKNOWN_TOPIC_OR_PARTITION`.
+
 #### [`ask-dont-search`](https://github.com/cyroalves/ask-dont-search) · hybrid retrieval, tool calling and a corrective agent
 
-*When the answer is a number in a table, don't search text for it — ask the source.*
+*When the answer is a number in a table, don't search text for it. Ask the source.*
 
-Question answering over 5,993 IBGE press releases (2004–2026) and five official SIDRA statistical series, running entirely on local models — `bge-m3` for embeddings, `gemma3:4b` for generation, both on Ollama, no API keys. Built to answer one question: when does retrieval actually help, and when is it the wrong instrument?
+Question answering over 5,993 IBGE press releases (2004 to 2026) and five official SIDRA statistical series, running entirely on local models: `bge-m3` for embeddings, `gemma3:4b` for generation, both on Ollama, no API keys. Built to answer one question, which is when retrieval actually helps and when it is the wrong instrument.
 
-- **The finding is a negative one, and that is the point.** On a corpus spanning 22 years, the best retrieval mode surfaces a relevant document for 48% of the questions and the generated answer states the right value for 13% — "what was the IPCA in August?" matches twenty Augusts about equally well. The disambiguating information is a *year*, which belongs in a query, not in a similarity score. Routing those questions to the statistical API instead takes value accuracy from 0.13 to 0.97, at a third of the tokens.
+- **The finding is a negative one, and that is the point.** On a corpus spanning 22 years, the best retrieval mode surfaces a relevant document for 48% of the questions and the generated answer states the right value for 13%. "What was the IPCA in August?" matches twenty Augusts about equally well. The disambiguating information is a *year*, which belongs in a query, not in a similarity score. Routing those questions to the statistical API instead takes value accuracy from 0.13 to 0.97, at a third of the tokens.
 - **Retrieval written out rather than imported.** Okapi BM25 and reciprocal rank fusion in readable code. RRF was chosen over a weighted score blend because cosine and BM25 live on incomparable scales: fusing *ranks* needs no normalisation and no weight to tune. LangGraph is used only where the control flow genuinely branches and loops.
-- **Results reported against myself.** Hybrid fusion *lowers* ranking quality on this corpus (MRR 0.36 → 0.28) and that row stays in the table. The LLM reranker wins on all three measures at 8× the latency, listed with its parse-failure count so a reranker that silently no-ops cannot look like the row above it.
-- **The evaluation set is derived, not hand-written.** Questions come from one template per series, correct values from whatever SIDRA returns, and gold documents from a mechanical, boundary-aware join on product id and release window — so the numbers describe the system rather than the author's memory of the corpus.
-- **Deterministic where it counts.** Period resolution returns `None` instead of inventing a period, and every number in an answer must appear in the context it was given before the answer is released — which catches the failure an LLM judge is worst at: a plausible figure recalled from model weights.
+- **Results reported against myself.** Hybrid fusion *lowers* ranking quality on this corpus (MRR 0.36 to 0.28) and that row stays in the table. The LLM reranker wins on all three measures at 8x the latency, listed with its parse-failure count so a reranker that silently no-ops cannot look like the row above it.
+- **The evaluation set is derived, not hand-written.** Questions come from one template per series, correct values from whatever SIDRA returns, and gold documents from a mechanical, boundary-aware join on product id and release window, so the numbers describe the system rather than the author's memory of the corpus.
+- **Deterministic where it counts.** Period resolution returns `None` instead of inventing a period, and every number in an answer must appear in the context it was given before the answer is released. That catches the failure an LLM judge is worst at: a plausible figure recalled from model weights.
 - 33 tests with faked embedding and chat backends, so CI needs neither a GPU nor network access.
 
 #### [`ata`](https://github.com/cyroalves/ai_talk) · meeting to document, offline
 
-A tool I built and use daily: a single **Go** binary orchestrating **ffmpeg**, **Whisper** (whisper.cpp) and an **LLM**. It records a meeting, transcribes it entirely on the local machine — the audio never leaves it, an LGPD requirement of the use case — and generates three document types: meeting minutes, technical specification, and requirements gathering.
+A tool I built and use daily: a single **Go** binary orchestrating **ffmpeg**, **Whisper** (whisper.cpp) and an **LLM**. It records a meeting, transcribes it entirely on the local machine, and generates three document types: meeting minutes, technical specification, and requirements gathering. The audio never leaves the machine, which was the LGPD requirement of the use case.
 
     record → ffmpeg → whisper.cpp (offline) → LLM (swappable) → document
 
@@ -109,17 +128,11 @@ A tool I built and use daily: a single **Go** binary orchestrating **ffmpeg**, *
 - **Multiple backends behind a single interface:** a local model (Ollama, gemma3) or a headless CLI, swapped by flag without touching the caller.
 - **Explicit token budgeting.** It estimates transcript plus prompt against an output reserve sized from the real documents, and fails with a clear error when the input does not fit the context window, instead of letting the model truncate silently.
 - **A real failure diagnosed.** On a 58-minute meeting the transcript collapsed into repetition from the halfway point: the decoder was feeding its own error back as context for the next window. Isolating the decoding windows restored full coverage.
-- **Build versus buy, decided with numbers.** A study over a measured corpus — 18 meetings, 34 documents, 11.6 hours of audio — with a cost calculator and explicit per-model assumptions. Token cost turned out to be noise; the real decision was audio privacy and engineering hours.
+- **Build versus buy, decided with numbers.** A study over a measured corpus of 18 meetings, 34 documents and 11.6 hours of audio, with a cost calculator and explicit per-model assumptions. Token cost turned out to be noise. The real decision was audio privacy and engineering hours.
 
 #### [`load-balancer`](https://github.com/cyroalves/load-balancer) · layer-7 HTTP load balancer in Go
 
-No external dependencies. Pluggable strategies — round-robin, least-connections and ip-hash — with active and passive health checking, automatic failover with safe request-body retry, and per-backend metrics.
-
-### Currently Deepening
-
-![Vector databases](https://img.shields.io/badge/-Vector%20databases-05122A?style=flat)&nbsp;
-![Cross-encoder reranking](https://img.shields.io/badge/-Cross--encoder%20reranking-05122A?style=flat)&nbsp;
-![FastAPI](https://img.shields.io/badge/-FastAPI-05122A?style=flat&logo=fastapi&logoColor=009688)
+No external dependencies. Pluggable strategies, round-robin, least-connections and ip-hash, with active and passive health checking, automatic failover with safe request-body retry, and per-backend metrics.
 
 ### Connect with Me
 

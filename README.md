@@ -5,18 +5,11 @@ Espírito Santo, Brazil · open to remote
 
 ### About Me
 
-Software engineer with around six years of experience in Python and TypeScript. For the last four I have been at **Play9**, a SaaS platform for influencer campaign management, billing and media data. I was part of the team behind **Playnest**, an application with roughly 100k users, working end to end there: data model and API, interface, third-party integrations, and the pipelines behind them. These days I work directly with clients, turning their demands into product on our internal platform.
+Software engineer with around six years of experience in Python and TypeScript, after a Physics degree at UFES. For the last four I have been at **Play9**, a SaaS platform for influencer campaign management, billing and media data. I was part of the team behind **Playnest**, an application with roughly 100k users, working end to end there: data model and API, interface, third-party integrations, and the pipelines behind them. These days I work directly with clients, turning their demands into product on our internal platform.
 
-**Most of my work lives in private repositories,** so the repository list here is much shorter than the work behind it. What that work looks like in practice:
+**Most of my work lives in private repositories,** so the repository list here is much shorter than the work behind it. Most of it is the data platform: Airflow and dbt on BigQuery over GCP, layered from landing through trusted and refined to the warehouse, loaded by idempotent `MERGE` upserts with SCD Type 2 history. Backfills and migrations run under a protocol there: a dry run, a scoped blast radius, before and after snapshots, and a second run to prove idempotency. The integrations are written for the other side being down, with OAuth 1.0 TBA and 2.0, exponential backoff, and a transactional ledger for idempotent synchronization with asynchronous retry.
 
-- **End to end by default.** I design the schema, write the API, build the screen, and make sure the data arriving on both sides is trustworthy.
-- **Data platform.** Airflow and dbt on BigQuery over GCP: a layered architecture (landing, trusted, refined, warehouse), idempotent `MERGE` upserts, SCD Type 2 state history, partitioning and clustering.
-- **Production changes under a protocol.** Backfills and migrations with a dry run, a scoped blast radius, before and after snapshots, and a second run to prove idempotency.
-- **Integrations that survive the other side being down.** OAuth 1.0 TBA and 2.0, pagination, exponential backoff, rate limiting, and a transactional ledger for idempotent synchronization with asynchronous retry.
-- **Applied LLMs, with a spine.** Versioned system prompts, explicit token budgeting, interchangeable model backends. And when an LLM does not pay off, I say so: for a PDF parser I measured OCR against an LLM and shipped deterministic extraction instead, for data-protection and cost reasons.
-- **Coding agents used structurally.** Skills, rules and subagents versioned in the production repository, and spec-driven development with PRDs as the input to the work.
-
-I studied Physics at UFES before moving into software, which is probably why I would rather settle a question with a measurement than with an opinion.
+Not every problem there wanted a model. For a curation PDF parser I measured OCR against an LLM and shipped deterministic extraction instead, on data-protection and cost grounds. The agents I do run are versioned like code: skills, rules and subagents in the production repository, with PRDs and architecture documents as the input to the work.
 
 ### Tech Stack
 

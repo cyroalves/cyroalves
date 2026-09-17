@@ -27,6 +27,7 @@ Not every problem there wanted a model. For a curation PDF parser I measured OCR
 ![GraphQL](https://img.shields.io/badge/-GraphQL-05122A?style=flat&logo=graphql&logoColor=E10098)&nbsp;
 ![Apollo Server](https://img.shields.io/badge/-Apollo%20Server-05122A?style=flat&logo=apollographql&logoColor=white)&nbsp;
 ![TypeORM](https://img.shields.io/badge/-TypeORM-05122A?style=flat&logo=typeorm&logoColor=FE0803)&nbsp;
+![Hibernate](https://img.shields.io/badge/-Hibernate-05122A?style=flat&logo=hibernate&logoColor=59666C)&nbsp;
 ![Express](https://img.shields.io/badge/-Express-05122A?style=flat&logo=express&logoColor=white)&nbsp;
 ![Spring Boot](https://img.shields.io/badge/-Spring%20Boot-05122A?style=flat&logo=springboot&logoColor=6DB33F)&nbsp;
 ![Flask](https://img.shields.io/badge/-Flask-05122A?style=flat&logo=flask&logoColor=white)&nbsp;
@@ -52,6 +53,7 @@ Not every problem there wanted a model. For a curation PDF parser I measured OCR
 ![dbt](https://img.shields.io/badge/-dbt-05122A?style=flat&logoColor=FF694B)&nbsp;
 ![Apache Airflow](https://img.shields.io/badge/-Apache%20Airflow-05122A?style=flat&logo=apacheairflow&logoColor=017CEE)&nbsp;
 ![PostgreSQL](https://img.shields.io/badge/-PostgreSQL-05122A?style=flat&logo=postgresql&logoColor=4169E1)&nbsp;
+![Flyway](https://img.shields.io/badge/-Flyway-05122A?style=flat&logo=flyway&logoColor=CC0200)&nbsp;
 ![MySQL](https://img.shields.io/badge/-MySQL-05122A?style=flat&logo=mysql&logoColor=4479A1)&nbsp;
 ![Firestore](https://img.shields.io/badge/-Firestore-05122A?style=flat&logo=firebase&logoColor=FFCA28)&nbsp;
 ![pandas](https://img.shields.io/badge/-pandas-05122A?style=flat&logo=pandas&logoColor=white)
@@ -86,17 +88,20 @@ Not every problem there wanted a model. For a curation PDF parser I measured OCR
 
 ### Projects
 
-#### [`java-spring-kafka`](https://github.com/cyroalves/java-spring-kafka) · event-driven order pipeline on Spring Boot 4 and Kafka 4
+#### [`java-spring-kafka`](https://github.com/cyroalves/java-spring-kafka) · event-driven order pipeline on Spring Boot 4, Kafka 4 and Postgres
 
-*Every guarantee is demonstrable by one command and covered by a test against a real broker.*
+*Every guarantee is demonstrable by one command and covered by a test against a real broker and a real database.*
 
-An HTTP API publishes orders to `orders.v1`. Two consumer groups read that topic, one validating and one issuing invoices to `invoices.v1`, with a dead letter queue behind both. Java 21, Kafka 4 on KRaft, Testcontainers.
+An HTTP API publishes orders to `orders.v1`. Four consumer groups read from the topics: one validates, one issues invoices to `invoices.v1` under a transaction, and two project the same events into Postgres, with a dead letter queue behind all of them. Java 21, Kafka 4 on KRaft, Postgres 17, JPA and Hibernate, Flyway, Testcontainers.
 
 - **Ordering where it matters.** The customer id is the record key, so every order from one customer lands on one partition and keeps its sequence. `make burst` publishes nine orders across three customers and shows the split.
 - **Retry that distinguishes causes.** Exponential backoff at 500ms, 1s, 2s, 4s for transient failures. A permanent data defect skips the backoff and goes straight to the dead letter queue, because retrying a malformed order changes nothing. `make flaky` recovers on the third attempt, `make boom` exhausts the backoff, `make invalid` never retries.
 - **Backoff kept deliberately short.** While a record backs off, the container pauses the consumer and seeks back to the failed offset, so the whole partition stalls. A generous backoff on a Kafka consumer is downtime dressed as resilience.
 - **Read-process-write transactions.** A separate transactional producer with a stable `transactional.id`, so a restart fences the zombie instance instead of letting it commit behind its replacement. `setCommitRecovered(true)` commits the dead letter publish and the offset advance together, which is what stops a poison record from reappearing on every restart. `make peek` compares `read_committed` against `read_uncommitted` on the same topic.
+- **That transaction also leaks, and the read model is what made it visible.** An aborted invoice run writes five invoices to the log across its five attempts. Four stay invisible under `read_committed` — and the fifth commits alongside the dead letter, because the recovery transaction carries whatever the listener produced on that last pass. One row reaches the database. The first version of the test asserted zero and failed; it now pins the real number. A side effect that must not survive a failure belongs after the part that fails, not before it.
 - **The dead letter destination is declared, not inferred.** The framework default suffix changed between spring-kafka 3.x and 4.x, and an implicit destination only reveals itself as wrong in production, as a producer stuck on `UNKNOWN_TOPIC_OR_PARTITION`.
+- **A read model, and the database is not the source of truth.** Two consumer groups of their own project the events into `orders` and `invoices`, so the system can answer *this order* and *how much has this customer had approved* — questions a partitioned log answers by replaying a partition and SQL answers with an indexed `sum`. The tables are disposable: drop them, reset that group's offset, and the projection rebuilds from the topic. Nothing is written to the database on the HTTP path; the `POST` still publishes and returns 202, so a `GET` right after it can legitimately return 404.
+- **Idempotency belongs to the constraint, not to the `if` in front of it.** A commit in Postgres and a commit of the Kafka offset are two transactions and nothing joins them, so a crash between them redelivers the message. The `exists` check before the insert is an optimisation; the `UNIQUE` on the event's natural key is the guarantee, and the violation is handled as *already processed* rather than as an error. There is no foreign key between invoices and orders, either: the two groups are independent, so an invoice can be written before the order that produced it, and a constraint there would turn an ordinary race into a failure. Schema changes go through Flyway with `ddl-auto: validate`, never through Hibernate.
 
 #### [`ask-dont-search`](https://github.com/cyroalves/ask-dont-search) · hybrid retrieval, tool calling and a corrective agent
 
